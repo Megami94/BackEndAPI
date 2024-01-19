@@ -1,14 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace BackendApi.Controllers
 {
+    public class WeatherData
+    {
+        public int Id { get; set; }
+        public string Date { get; set; }
+        public int Degree { get; set; }
+        public string Location { get; set; }
+    }
+
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static List<string> Summaries = new()
+
+        public static List<Discipline> disciplines = new()
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+            new Discipline() {IdDiscipline = 1, NameDiscipline = "Программирование",NumCourse = 2, IdSpeciality=1},
+            new Discipline() {IdDiscipline = 2, NameDiscipline = "Проектрирование Баз Данных", NumCourse = 3, IdSpeciality=1},
+            new Discipline() {IdDiscipline = 7, NameDiscipline = "Учебная практика", NumCourse = 2 , IdSpeciality = 2},
+            new Discipline() {IdDiscipline = 15, NameDiscipline = "Разработка мобильных приложений", NumCourse = 1 , IdSpeciality = 2},
+            new Discipline() {IdDiscipline = 23, NameDiscipline = "Архитекутра апаратных средств", NumCourse = 1 , IdSpeciality = 2},
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
@@ -19,98 +33,117 @@ namespace BackendApi.Controllers
         }
 
         [HttpGet]
-        public List<string> Get()
+        public List<Discipline> Get()
         {
-            return Summaries;
+            return disciplines;
         }
 
         [HttpPost]
 
-        public IActionResult Add(string name)
+        public IActionResult Add(Discipline data)
         {
-            Summaries.Add(name);
+            if (data.IdDiscipline < 0)
+            {
+                return BadRequest("Ошибка: значение поля Id меньше 0.");
+            }
+
+            for (int i = 0; i < disciplines.Count; i++)
+            {
+                if (disciplines[i].IdDiscipline == data.IdDiscipline)
+                {
+                    return BadRequest("Запись с таким Id уже существует");
+                }
+            }
+
+            disciplines.Add(data);
             return Ok();
         }
 
         [HttpPut]
 
-        public IActionResult Update(int index, string name)
+        public IActionResult Update(Discipline data)
         {
-            if (index < 0 || index >= Summaries.Count) {
-                return BadRequest("Такой индекс неверный!");
+            for (int i = 0; i < disciplines.Count; i++)
+            {
+                if (disciplines[i].IdDiscipline == data.IdDiscipline)
+                {
+                    disciplines[i] = data;
+                    return Ok();
+                }
             }
 
-            Summaries[index] = name;
-            return Ok();
+            return BadRequest("Такая запись не существует");
         }
 
         [HttpDelete]
 
-        public IActionResult Delete(int index)
+        public IActionResult Delete(int id)
         {
-            if (index < 0 || index >= Summaries.Count)
+            if (id < 0)
             {
-                return BadRequest("Такой индекс неверный!");
+                return BadRequest("Ошибка: значение поля Id меньше 0.");
+            }
+            for (int i = 0; i < disciplines.Count; i++)
+            {
+                if (disciplines[i].IdDiscipline == id)
+                {
+                    disciplines.RemoveAt(i);
+                    return Ok();
+                }
             }
 
-            Summaries.RemoveAt(index);
-            return Ok();
+            return BadRequest("Такая запись не существует");
         }
 
-        [HttpGet("{index}")]
+        [HttpGet("{id}")]
 
-        public string Get(int index) 
+        public IActionResult GetById(int id) 
         {
-            if (index < 0 || index >= Summaries.Count)
+            for (int i = 0; i < disciplines.Count; i++)
             {
-                return "Такой индекс неверный!";
+                if (disciplines[i].IdDiscipline == id)
+                {
+                    return Ok(disciplines[i]);
+                }
             }
-            return Summaries[index];
+
+            return BadRequest("Такая запись не обнаружена");
         }
 
         [HttpGet("find-by-name")]
 
-        public int Get(string name)
+        public IActionResult GetByName(string name)
         {
-            int count = 0;
-            foreach (var i in Summaries)
+            foreach (var i in disciplines)
             {
-                if (name == i)
+                if (name == i.NameDiscipline)
                 {
-                    count++;
+                    return Ok("Запись с указанной дисциплиной имеется в нашем списке");
                 }
             }
 
-            return count;
+            return BadRequest("Запись с указанной дисциплиной не обнаружено");
         }
 
-        [HttpGet("Sort-by-strategy")]
+        [HttpGet("Get-All")]
 
         public IActionResult GetAll(int? sortStrategy)
         {
             if (sortStrategy == null)
             {
-                //Get();
                 return Ok();
             }
-
             else if (sortStrategy == 1)
             {
-                Summaries.Sort();
+                disciplines.Sort((d1, d2) => d1.NameDiscipline.CompareTo(d2.NameDiscipline));
                 return Ok();
             }
-
             else if (sortStrategy == -1)
             {
-                Summaries.Sort();
-                Summaries.Reverse();
+                disciplines.Sort((d1, d2) => d2.NameDiscipline.CompareTo(d1.NameDiscipline));
                 return Ok();
             }
-            else
-            {
-                return BadRequest("Некорректное значение параметра sortStrategy");
-            }
-            
+            return BadRequest("Некорректное значение параметра sortStrategy");
         }
     }
 }

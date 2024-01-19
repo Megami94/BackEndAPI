@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FQ1pDTOZP3zkrIQ1GomS2JJw3mAwGnp92ab+MbU7htbbKqwt6w1/qyyUDAkT0whWNM0uCOoLyiqUyHiZd5xSVg==",
+  "dgSpecHash": "dMSKsfGHkT5n5mi4uMZ4p0L7/4wDJyNgehnPisBagpw4Nuvm9CQ87rbaPPo21tg2QTYU4Y1MhFTuValeXXaKLg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\dshin\\OneDrive\\Рабочий стол\\BackendApi\\BackendApi\\BackendApi.csproj",
+  "projectFilePath": "C:\\Users\\dshin\\OneDrive\\Рабочий стол\\ПРАКТИКА\\BackendApi\\BackendApi\\BackendApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\dshin\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\dshin\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
